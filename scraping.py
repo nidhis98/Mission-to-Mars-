@@ -21,6 +21,13 @@ def scrape_all():
         "last_modified": dt.datetime.now()
     }
 
+    data = {
+        "Cerberus Hemisphere Enhanced": https://marshemispheres.com/images/full.jpg,
+        "Schiaparelli Hemisphere Enhanced": https://marshemispheres.com/images/schiaparelli_enhanced-full.jpg,
+        "Syrtis Major Hemisphere Enhanced": https://marshemispheres.com/images/syrtis_major_enhanced-full.jpg,
+        "Valles Marineris Hemisphere Enhanced": https://marshemispheres.com/images/valles_marineris_enhanced-full.jpg()
+    }
+
     # Stop webdriver and return data
     browser.quit()
     return data
@@ -95,6 +102,50 @@ def mars_facts():
     return df.to_html(classes="table table-striped")
 
 if __name__ == "__main__":
+    
+    def hemisphere_data():
 
-    # If running as script, print scraped data
-    print(scrape_all())
+# Import Splinter and BeautifulSoup
+        from splinter import Browser
+        from bs4 import BeautifulSoup as soup
+        from webdriver_manager.chrome import ChromeDriverManager
+        import pandas as pd
+
+executable_path = {'executable_path': ChromeDriverManager().install()}
+browser = Browser('chrome', **executable_path, headless=False)
+
+# Visit URL
+url = 'https://marshemispheres.com/'
+browser.visit(url)
+
+# Create a list to hold the images and titles.
+hemisphere_image_urls = []
+                         
+ # Get a list of all the the hemispheres
+links = browser.find_by_css('a.product-item img')
+
+# Next, loop through those links, click the link, find the sample anchor, return the href
+for i in range(len(links)):
+    hemisphere = {}
+
+# We have to find the elements for each loop to avoid a stale element exception
+    browser.find_by_css('a.product-item img')[i].click()
+
+# Next, we find the Sample image anchor tag and extract the href
+    sample_element = browser.links.find_by_text('Sample').first
+    hemisphere['img_url'] = sample_element['href']
+
+# Get Hemisphere title
+    hemisphere['title'] = browser.find_by_css('h2.title').text
+    
+# Append hemisphere object to list
+    hemisphere_image_urls.append(hemisphere)
+    
+#backwards
+browser.back()
+
+# Print the list that holds the dictionary of each image url and title.
+print(hemisphere_image_urls)
+
+# If running as script, print scraped data
+print(scrape_all())
